@@ -22,6 +22,10 @@
 		91C6D26318FC599C00849E5C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91C6D24718FC599C00849E5C /* CoreData.framework */; };
 		91C6D26B18FC599C00849E5C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 91C6D26918FC599C00849E5C /* InfoPlist.strings */; };
 		91C6D26D18FC599C00849E5C /* DashboardTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C6D26C18FC599C00849E5C /* DashboardTests.m */; };
+		91C6D27A18FC5E9400849E5C /* iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91C6D27918FC5E9400849E5C /* iPhone.storyboard */; };
+		91C6D27C18FC5ED200849E5C /* iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91C6D27B18FC5ED200849E5C /* iPad.storyboard */; };
+		91C6D27F18FC662900849E5C /* Weather.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C6D27E18FC662900849E5C /* Weather.m */; };
+		91C6D28218FC6D2C00849E5C /* WeatherViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C6D28118FC6D2C00849E5C /* WeatherViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +57,12 @@
 		91C6D26818FC599C00849E5C /* DashboardTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DashboardTests-Info.plist"; sourceTree = "<group>"; };
 		91C6D26A18FC599C00849E5C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		91C6D26C18FC599C00849E5C /* DashboardTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DashboardTests.m; sourceTree = "<group>"; };
+		91C6D27918FC5E9400849E5C /* iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone.storyboard; sourceTree = "<group>"; };
+		91C6D27B18FC5ED200849E5C /* iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPad.storyboard; sourceTree = "<group>"; };
+		91C6D27D18FC662900849E5C /* Weather.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Weather.h; sourceTree = "<group>"; };
+		91C6D27E18FC662900849E5C /* Weather.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Weather.m; sourceTree = "<group>"; };
+		91C6D28018FC6D2C00849E5C /* WeatherViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeatherViewController.h; sourceTree = "<group>"; };
+		91C6D28118FC6D2C00849E5C /* WeatherViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeatherViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,10 +125,10 @@
 		91C6D24918FC599C00849E5C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
-				91C6D25218FC599C00849E5C /* AppDelegate.h */,
-				91C6D25318FC599C00849E5C /* AppDelegate.m */,
+				91C6D27818FC5DAF00849E5C /* Controllers */,
+				91C6D27718FC5DA700849E5C /* Models */,
+				91C6D27618FC5D9600849E5C /* Views */,
 				91C6D25818FC599C00849E5C /* Images.xcassets */,
-				91C6D25518FC599C00849E5C /* Dashboard.xcdatamodeld */,
 				91C6D24A18FC599C00849E5C /* Supporting Files */,
 			);
 			path = Dashboard;
@@ -127,6 +137,8 @@
 		91C6D24A18FC599C00849E5C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				91C6D25218FC599C00849E5C /* AppDelegate.h */,
+				91C6D25318FC599C00849E5C /* AppDelegate.m */,
 				91C6D24B18FC599C00849E5C /* Dashboard-Info.plist */,
 				91C6D24C18FC599C00849E5C /* InfoPlist.strings */,
 				91C6D24F18FC599C00849E5C /* main.m */,
@@ -152,6 +164,37 @@
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
+		};
+		91C6D27618FC5D9600849E5C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				91C6D27918FC5E9400849E5C /* iPhone.storyboard */,
+				91C6D27B18FC5ED200849E5C /* iPad.storyboard */,
+			);
+			name = Views;
+			path = "/Users/benjaminsenechal/Documents/EPSI 2013:2014/Developpement iPhone/Projets/Dashboard/Dashboard/Views";
+			sourceTree = "<absolute>";
+		};
+		91C6D27718FC5DA700849E5C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				91C6D25518FC599C00849E5C /* Dashboard.xcdatamodeld */,
+				91C6D27D18FC662900849E5C /* Weather.h */,
+				91C6D27E18FC662900849E5C /* Weather.m */,
+			);
+			name = Models;
+			path = "/Users/benjaminsenechal/Documents/EPSI 2013:2014/Developpement iPhone/Projets/Dashboard/Dashboard/Models";
+			sourceTree = "<absolute>";
+		};
+		91C6D27818FC5DAF00849E5C /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				91C6D28018FC6D2C00849E5C /* WeatherViewController.h */,
+				91C6D28118FC6D2C00849E5C /* WeatherViewController.m */,
+			);
+			name = Controllers;
+			path = "/Users/benjaminsenechal/Documents/EPSI 2013:2014/Developpement iPhone/Projets/Dashboard/Dashboard/Controllers";
+			sourceTree = "<absolute>";
 		};
 /* End PBXGroup section */
 
@@ -228,8 +271,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91C6D27C18FC5ED200849E5C /* iPad.storyboard in Resources */,
 				91C6D24E18FC599C00849E5C /* InfoPlist.strings in Resources */,
 				91C6D25918FC599C00849E5C /* Images.xcassets in Resources */,
+				91C6D27A18FC5E9400849E5C /* iPhone.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,8 +293,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91C6D27F18FC662900849E5C /* Weather.m in Sources */,
 				91C6D25418FC599C00849E5C /* AppDelegate.m in Sources */,
 				91C6D25718FC599C00849E5C /* Dashboard.xcdatamodeld in Sources */,
+				91C6D28218FC6D2C00849E5C /* WeatherViewController.m in Sources */,
 				91C6D25018FC599C00849E5C /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -370,7 +417,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Dashboard/Dashboard-Prefix.pch";
 				INFOPLIST_FILE = "Dashboard/Dashboard-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -383,7 +432,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Dashboard/Dashboard-Prefix.pch";
 				INFOPLIST_FILE = "Dashboard/Dashboard-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -447,6 +498,7 @@
 				91C6D27218FC599C00849E5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		91C6D27318FC599C00849E5C /* Build configuration list for PBXNativeTarget "DashboardTests" */ = {
 			isa = XCConfigurationList;
@@ -455,6 +507,7 @@
 				91C6D27518FC599C00849E5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
@@ -465,7 +518,8 @@
 				91C6D25618FC599C00849E5C /* Dashboard.xcdatamodel */,
 			);
 			currentVersion = 91C6D25618FC599C00849E5C /* Dashboard.xcdatamodel */;
-			path = Dashboard.xcdatamodeld;
+			name = Dashboard.xcdatamodeld;
+			path = ../Dashboard.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
