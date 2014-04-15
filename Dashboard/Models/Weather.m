@@ -7,15 +7,39 @@
 //
 
 #import "Weather.h"
+@interface Weather()
+
+@property (strong, nonatomic) NSMutableArray *MutableArray;
+
+@end
 
 @implementation Weather
+
+- (NSMutableArray*)MutableArray
+{
+    if(!_MutableArray) _MutableArray = [[NSMutableArray alloc]init];
+    return _MutableArray;
+}
 
 - (id)initWithData:(NSDictionary*)content
 {
     self = [super init];
     if (self) {
-        self.conditionDescription = content[@"description"];
-        self.icon = content[@"icon"];
+        self.temperature = content[@"main"][@"temp"];
+        self.tempLow = content[@"main"][@"temp_min"];
+        self.tempHigh = content[@"main"][@"temp_max"];
+        
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:((NSString*)(content[@"dt"])).floatValue];
+        
+        if(date){
+            self.date=date;
+        }
+
+        for(NSDictionary *weather in content[@"weather"])
+        {
+            self.icon = weather[@"icon"];
+            self.conditionDescription = weather[@"description"];
+        }
     }
     return self;
 }

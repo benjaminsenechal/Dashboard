@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WeatherViewController : UIViewController<CLLocationManagerDelegate>
+@interface WeatherViewController : UIViewController<CLLocationManagerDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong, readwrite) CLLocation *currentLocation;
+@property (nonatomic, strong) UIImageView *backgroundImageView;
+@property (nonatomic, strong) UIImageView *blurredImageView;
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, assign) CGFloat screenHeight;
 
 @end
