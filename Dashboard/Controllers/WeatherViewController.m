@@ -10,7 +10,8 @@
 
 @interface WeatherViewController ()
 
-@property (strong, nonatomic) Weather *Weather;
+@property (strong, nonatomic) Weather *weather;
+@property (nonatomic, strong) NSArray *weathers;
 @property (nonatomic, strong) NSDateFormatter *hourlyFormatter;
 @property (nonatomic, strong) NSDateFormatter *dailyFormatter;
 @property (nonatomic, strong) NSURLSession *session;
@@ -19,7 +20,6 @@
 @property (nonatomic, strong) UILabel *cityLabel;
 @property (nonatomic, strong) UIImageView *iconView;
 @property (nonatomic, strong) UILabel *conditionsLabel;
-@property (nonatomic, strong) NSArray *weather;
 
 @end
 
@@ -27,10 +27,10 @@
 
 #pragma mark Life cycle
 
-- (Weather*)Wheater
+- (Weather*)weather
 {
-    if(!_Weather) _Weather = [[Weather alloc]init];
-    return _Weather;
+    if(!_weather) _weather = [[Weather alloc]init];
+    return _weather;
 }
 
 - (id)init {
@@ -48,7 +48,7 @@
 {
     [super viewDidLoad];
     [self initUI];
-
+    
     _locationManager = [[CLLocationManager alloc] init];
     _locationManager.delegate = self;
     _locationManager.distanceFilter = kCLDistanceFilterNone;
@@ -66,8 +66,8 @@
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
     UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                      message:@"Enable location"
-                                                     delegate:nil
+                                                      message:@"Please, enable location"
+                                                     delegate:self
                                             cancelButtonTitle:@"OK"
                                             otherButtonTitles:nil];
     
@@ -81,7 +81,7 @@
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     _session = [NSURLSession sessionWithConfiguration:config];
     
-    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/forecast/dayli?lat=%f&lon=%f&units=metric", self.currentLocation.coordinate.latitude,self.currentLocation.coordinate.longitude];
+    NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/forecast/daily?lat=%f&lon=%f&units=metric", self.currentLocation.coordinate.latitude,self.currentLocation.coordinate.longitude];
     NSLog(@"%@", url);
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
@@ -104,20 +104,20 @@
                     NSArray *contentOfRootDirectory = weatherJSON[@"list"];
                     for(NSMutableDictionary *data in contentOfRootDirectory)
                     {
-                        _Weather = [[Weather alloc]initWithData:data];
-                        _Weather.locationName = city;
-                        [weatherFound addObject:_Weather];
+                        _weather = [[Weather alloc]initWithData:data];
+                        _weather.locationName = city;
+                        [weatherFound addObject:_weather];
                     }
                 }else
                 {
                     NSLog(@"Error");
                 }
                 
-                _weather = weatherFound;
+                _weathers = [[NSArray alloc] initWithArray:weatherFound];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-                    Weather *w = [_weather firstObject];
+                    Weather *w = [_weathers firstObject];
                     _temperatureLabel.text = [NSString stringWithFormat:@"%.0f°",[w.temperature floatValue]];
                     _hiloLabel.text = [NSString stringWithFormat:@"%.0f° / %.0f°",[w.tempHigh floatValue], [w.tempLow floatValue]];
                     [_iconView setImage:[UIImage imageNamed:[w imageName]]];
@@ -131,7 +131,7 @@
                     }];
                 });
             }else{
-                NSLog(@"http Error %d",httpResp.statusCode);
+                NSLog(@"http Error %d", (int)httpResp.statusCode);
             }
         }else{
             NSLog(@"Error");
@@ -144,7 +144,6 @@
 
 - (void)initUI
 {
-    NSLog(@"init ui / view did load");
     self.view.backgroundColor = [UIColor redColor];
     
     self.screenHeight = [UIScreen mainScreen].bounds.size.height;
@@ -228,6 +227,7 @@
     _iconView = [[UIImageView alloc] initWithFrame:iconFrame];
     _iconView.contentMode = UIViewContentModeScaleAspectFit;
     _iconView.backgroundColor = [UIColor clearColor];
+    
     [header addSubview:_iconView];
 }
 
@@ -247,16 +247,15 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == 0) {
-        return MIN([_weather count], 6)+ 1;
+        return [_weathers count];
     }
-    return MIN([_weather count], 6)+ 1;
+    return [_weathers count];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 1;
 }
-
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -275,13 +274,14 @@
     if (indexPath.section == 0){
         if (indexPath.row == 0)
         {
-            cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+            cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:20];
             cell.textLabel.text = [@"Next days" capitalizedString];
             cell.detailTextLabel.text = @"";
             cell.imageView.image = nil;
         }else{
-            Weather *w = [_weather objectAtIndex:indexPath.row];
-            cell.textLabel.text = [self.dailyFormatter stringFromDate:w.date];
+            Weather *w = [_weathers objectAtIndex:indexPath.row];
+            cell.textLabel.text = [[self.dailyFormatter stringFromDate:w.date] capitalizedString];
+            [self configureDailyCell:cell weather:w];
         }
     }
     return cell;
@@ -291,6 +291,17 @@
 {
 	NSInteger cellCount = [self tableView:tableView numberOfRowsInSection:indexPath.section];
     return self.screenHeight / (CGFloat)cellCount;
+}
+
+- (void)configureDailyCell:(UITableViewCell *)cell weather:(Weather *)weather {
+    cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+    cell.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+    cell.textLabel.text = [self.dailyFormatter stringFromDate:weather.date];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%.0f° / %.0f°",
+                                 weather.tempHigh.floatValue,
+                                 weather.tempLow.floatValue];
+    cell.imageView.image = [UIImage imageNamed:[weather imageName]];
+    cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
 }
 
 - (void)viewWillLayoutSubviews

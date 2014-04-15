@@ -25,9 +25,9 @@
 {
     self = [super init];
     if (self) {
-        self.temperature = content[@"main"][@"temp"];
-        self.tempLow = content[@"main"][@"temp_min"];
-        self.tempHigh = content[@"main"][@"temp_max"];
+        self.temperature = content[@"temp"][@"day"];
+        self.tempLow = content[@"temp"][@"min"];
+        self.tempHigh = content[@"temp"][@"max"];
         
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:((NSString*)(content[@"dt"])).floatValue];
         
