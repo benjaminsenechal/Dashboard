@@ -44,7 +44,8 @@
     return self;
 }
 
-+ (NSDictionary *)imageMap {
++ (NSDictionary *)imageMap
+{
     
     static NSDictionary *_imageMap = nil;
     if (! _imageMap){

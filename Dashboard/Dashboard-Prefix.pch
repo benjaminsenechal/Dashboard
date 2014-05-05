@@ -15,5 +15,6 @@
     #import <Foundation/Foundation.h>
     #import <CoreData/CoreData.h>
     #import "Weather.h"
+    #import "Search.h"
     #import "LBBlurredImage/UIImageView+LBBlurredImage.h"
 #endif

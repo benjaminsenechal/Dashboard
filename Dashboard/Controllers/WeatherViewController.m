@@ -26,45 +26,31 @@
 @implementation WeatherViewController
 
 #pragma mark Life cycle
-
-- (Weather*)weather
-{
-    if(!_weather) _weather = [[Weather alloc]init];
-    return _weather;
-}
-
-- (id)init {
-    if (self = [super init]) {
-        _hourlyFormatter = [[NSDateFormatter alloc] init];
-        _hourlyFormatter.dateFormat = @"h a";
-        
-        _dailyFormatter = [[NSDateFormatter alloc] init];
-        _dailyFormatter.dateFormat = @"EEEE";
-    }
-    return self;
-}
-
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-    [self initUI];
     
-    _locationManager = [[CLLocationManager alloc] init];
-    _locationManager.delegate = self;
-    _locationManager.distanceFilter = kCLDistanceFilterNone;
-    _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    [_locationManager startUpdatingLocation];
+    _hourlyFormatter = [[NSDateFormatter alloc] init];
+    _hourlyFormatter.dateFormat = @"h a";
+    
+    _dailyFormatter = [[NSDateFormatter alloc] init];
+    _dailyFormatter.dateFormat = @"EEEE";
+    
+    [self initUI];
+
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+    self.locationManager.distanceFilter = kCLDistanceFilterNone;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    [self.locationManager startUpdatingLocation];
 }
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
-{
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     self.currentLocation = [locations firstObject];
     [self.locationManager stopUpdatingLocation];
     [self retrieveData];
 }
 
-- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
-{
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
     UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Error"
                                                       message:@"Please, enable location"
                                                      delegate:self
@@ -76,13 +62,11 @@
 
 #pragma mark Networking
 
-- (void)retrieveData
-{
-    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-    _session = [NSURLSession sessionWithConfiguration:config];
+- (void)retrieveData {
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    self.session = [NSURLSession sessionWithConfiguration:config];
     
     NSString *url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/forecast/daily?lat=%f&lon=%f&units=metric", self.currentLocation.coordinate.latitude,self.currentLocation.coordinate.longitude];
-    NSLog(@"%@", url);
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
     NSURLSessionDataTask *dataTask =
@@ -104,31 +88,27 @@
                     NSArray *contentOfRootDirectory = weatherJSON[@"list"];
                     for(NSMutableDictionary *data in contentOfRootDirectory)
                     {
-                        _weather = [[Weather alloc]initWithData:data];
-                        _weather.locationName = city;
-                        [weatherFound addObject:_weather];
+                        self.weather = [[Weather alloc]initWithData:data];
+                        self.weather.locationName = city;
+                        [weatherFound addObject:self.weather];
                     }
                 }else
                 {
                     NSLog(@"Error");
                 }
                 
-                _weathers = [[NSArray alloc] initWithArray:weatherFound];
+                self.weathers = [[NSArray alloc] initWithArray:weatherFound];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-                    Weather *w = [_weathers firstObject];
-                    _temperatureLabel.text = [NSString stringWithFormat:@"%.0f°",[w.temperature floatValue]];
-                    _hiloLabel.text = [NSString stringWithFormat:@"%.0f° / %.0f°",[w.tempHigh floatValue], [w.tempLow floatValue]];
-                    [_iconView setImage:[UIImage imageNamed:[w imageName]]];
-                    _cityLabel.text = [w.locationName capitalizedString];
-                    _conditionsLabel.text = [w.conditionDescription capitalizedString];
+                    Weather *w = [self.weathers firstObject];
+                    self.temperatureLabel.text = [NSString stringWithFormat:@"%.0f°",[w.temperature floatValue]];
+                    self.hiloLabel.text = [NSString stringWithFormat:@"%.0f° / %.0f°",[w.tempHigh floatValue], [w.tempLow floatValue]];
+                    [self.iconView setImage:[UIImage imageNamed:[w imageName]]];
+                    self.cityLabel.text = [w.locationName capitalizedString];
+                    self.conditionsLabel.text = [w.conditionDescription capitalizedString];
                     
-                    [_tableView reloadData];
-                    
-                    [weatherFound enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                        
-                    }];
+                    [self.tableView reloadData];
                 });
             }else{
                 NSLog(@"http Error %d", (int)httpResp.statusCode);
@@ -142,13 +122,12 @@
 
 #pragma mark UI
 
-- (void)initUI
-{
+- (void)initUI {
     self.view.backgroundColor = [UIColor redColor];
     
     self.screenHeight = [UIScreen mainScreen].bounds.size.height;
     
-    UIImage *background = [UIImage imageNamed:@"bg"];
+    UIImage *background = [UIImage imageNamed:@"bg_2"];
     self.backgroundImageView = [[UIImageView alloc]initWithImage:background];
     self.backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self.view addSubview:self.backgroundImageView];
@@ -196,39 +175,50 @@
     header.backgroundColor = [UIColor clearColor];
     self.tableView.tableHeaderView = header;
     
-    _temperatureLabel = [[UILabel alloc] initWithFrame:temperatureFrame];
-    _temperatureLabel.backgroundColor = [UIColor clearColor];
-    _temperatureLabel.textColor = [UIColor whiteColor];
-    _temperatureLabel.text = @"0°";
-    _temperatureLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:120];
-    [header addSubview:_temperatureLabel];
+    self.temperatureLabel = [[UILabel alloc] initWithFrame:temperatureFrame];
+    self.temperatureLabel.backgroundColor = [UIColor clearColor];
+    self.temperatureLabel.textColor = [UIColor whiteColor];
+    self.temperatureLabel.text = @"0°";
+    self.temperatureLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:120];
+    [header addSubview:self.temperatureLabel];
     
-    _hiloLabel = [[UILabel alloc] initWithFrame:hiloFrame];
-    _hiloLabel.backgroundColor = [UIColor clearColor];
-    _hiloLabel.textColor = [UIColor whiteColor];
-    _hiloLabel.text = @"0° / 0°";
-    _hiloLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:28];
-    [header addSubview:_hiloLabel];
+    self.hiloLabel = [[UILabel alloc] initWithFrame:hiloFrame];
+    self.hiloLabel.backgroundColor = [UIColor clearColor];
+    self.hiloLabel.textColor = [UIColor whiteColor];
+    self.hiloLabel.text = @"0° / 0°";
+    self.hiloLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:28];
+    [header addSubview:self.hiloLabel];
     
-    _cityLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width, 30)];
-    _cityLabel.backgroundColor = [UIColor clearColor];
-    _cityLabel.textColor = [UIColor whiteColor];
-    _cityLabel.text = @"Loading...";
-    _cityLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
-    _cityLabel.textAlignment = NSTextAlignmentCenter;
-    [header addSubview:_cityLabel];
+    self.cityLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width, 30)];
+    self.cityLabel.backgroundColor = [UIColor clearColor];
+    self.cityLabel.textColor = [UIColor whiteColor];
+    self.cityLabel.text = @"Loading...";
+    self.cityLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+    self.cityLabel.textAlignment = NSTextAlignmentCenter;
+    [header addSubview:self.cityLabel];
     
-    _conditionsLabel = [[UILabel alloc] initWithFrame:conditionsFrame];
-    _conditionsLabel.backgroundColor = [UIColor clearColor];
-    _conditionsLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
-    _conditionsLabel.textColor = [UIColor whiteColor];
-    [header addSubview:_conditionsLabel];
+    self.conditionsLabel = [[UILabel alloc] initWithFrame:conditionsFrame];
+    self.conditionsLabel.backgroundColor = [UIColor clearColor];
+    self.conditionsLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+    self.conditionsLabel.textColor = [UIColor whiteColor];
+    [header addSubview:self.conditionsLabel];
     
-    _iconView = [[UIImageView alloc] initWithFrame:iconFrame];
-    _iconView.contentMode = UIViewContentModeScaleAspectFit;
-    _iconView.backgroundColor = [UIColor clearColor];
+    self.iconView = [[UIImageView alloc] initWithFrame:iconFrame];
+    self.iconView.contentMode = UIViewContentModeScaleAspectFit;
+    self.iconView.backgroundColor = [UIColor clearColor];
     
-    [header addSubview:_iconView];
+    [header addSubview:self.iconView];
+    
+    UISwipeGestureRecognizer *swipeRecognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeLeft:)];
+    swipeRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.view addGestureRecognizer:swipeRecognizer];
+}
+
+- (IBAction)swipeLeft:(UIGestureRecognizer *)sender {
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"iPhone" bundle:nil];
+    SearchViewController *second = [storyboard instantiateViewControllerWithIdentifier:@"searchView"];
+    second.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [self presentViewController:second animated:YES completion:nil];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -244,21 +234,18 @@
 
 #pragma mark Table View Configuration
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        return [_weathers count];
+        return [self.weathers count];
     }
-    return [_weathers count];
+    return [self.weathers count];
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
-- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"CellIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
@@ -279,7 +266,7 @@
             cell.detailTextLabel.text = @"";
             cell.imageView.image = nil;
         }else{
-            Weather *w = [_weathers objectAtIndex:indexPath.row];
+            Weather *w = [self.weathers objectAtIndex:indexPath.row];
             cell.textLabel.text = [[self.dailyFormatter stringFromDate:w.date] capitalizedString];
             [self configureDailyCell:cell weather:w];
         }
@@ -287,8 +274,7 @@
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSInteger cellCount = [self tableView:tableView numberOfRowsInSection:indexPath.section];
     return self.screenHeight / (CGFloat)cellCount;
 }
@@ -304,8 +290,7 @@
     cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
 }
 
-- (void)viewWillLayoutSubviews
-{
+- (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     
     CGRect bounds = self.view.bounds;

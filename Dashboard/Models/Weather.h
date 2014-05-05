@@ -25,7 +25,7 @@
 @property (nonatomic, strong) NSNumber *windSpeed;
 @property (nonatomic, strong) NSString *icon;
 
-- (id)initWithData:(NSDictionary*)content;
+- (id)initWithData:(NSDictionary *)content;
 - (NSString *)imageName;
 
 @end
