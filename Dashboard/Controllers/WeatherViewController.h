@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "SearchViewController.h"
 @interface WeatherViewController : UIViewController<CLLocationManagerDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) CLLocationManager *locationManager;
