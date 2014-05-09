@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		912CC632191542C200F28414 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 912CC631191542C200F28414 /* WebViewController.m */; };
+		913370D7191D38370096E4CD /* Nameday.m in Sources */ = {isa = PBXBuildFile; fileRef = 913370D6191D38370096E4CD /* Nameday.m */; };
 		9150A38F1907F4A400309F53 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9150A38E1907F4A400309F53 /* SearchViewController.m */; };
 		91838E32190FC55A00DF0E4F /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 91838E31190FC55A00DF0E4F /* Search.m */; };
 		91C6D24218FC599C00849E5C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91C6D24118FC599C00849E5C /* Foundation.framework */; };
@@ -45,6 +46,8 @@
 /* Begin PBXFileReference section */
 		912CC630191542C200F28414 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
 		912CC631191542C200F28414 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
+		913370D5191D38370096E4CD /* Nameday.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nameday.h; sourceTree = "<group>"; };
+		913370D6191D38370096E4CD /* Nameday.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nameday.m; sourceTree = "<group>"; };
 		9150A38D1907F4A400309F53 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		9150A38E1907F4A400309F53 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		91838E30190FC55A00DF0E4F /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Search.h; sourceTree = "<group>"; };
@@ -198,6 +201,8 @@
 				91C6D27E18FC662900849E5C /* Weather.m */,
 				91838E30190FC55A00DF0E4F /* Search.h */,
 				91838E31190FC55A00DF0E4F /* Search.m */,
+				913370D5191D38370096E4CD /* Nameday.h */,
+				913370D6191D38370096E4CD /* Nameday.m */,
 			);
 			name = Models;
 			path = "/Users/benjaminsenechal/Documents/EPSI 2013:2014/Developpement iPhone/Projets/Dashboard/Dashboard/Models";
@@ -354,6 +359,7 @@
 				91C6D25718FC599C00849E5C /* Dashboard.xcdatamodeld in Sources */,
 				912CC632191542C200F28414 /* WebViewController.m in Sources */,
 				91C6D28218FC6D2C00849E5C /* WeatherViewController.m in Sources */,
+				913370D7191D38370096E4CD /* Nameday.m in Sources */,
 				9150A38F1907F4A400309F53 /* SearchViewController.m in Sources */,
 				91C6D25018FC599C00849E5C /* main.m in Sources */,
 				91838E32190FC55A00DF0E4F /* Search.m in Sources */,
