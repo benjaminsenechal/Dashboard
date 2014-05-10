@@ -14,4 +14,6 @@
 @property (nonatomic, strong) NSString *gender;
 @property (nonatomic, strong) NSString *name;
 
+- (id)initWithData:(NSDictionary *)content;
+
 @end

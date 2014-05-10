@@ -10,4 +10,15 @@
 
 @implementation Nameday
 
+- (id)initWithData:(NSDictionary *)content
+{
+    self = [super init];
+    if (self) {
+        self.date = content[@"date"];
+        self.gender = content[@"gender"];
+        self.name = content[@"name"];
+    }
+    return self;
+}
+
 @end

@@ -12,6 +12,7 @@
 
 @property (strong, nonatomic) Weather *weather;
 @property (nonatomic, strong) NSArray *weathers;
+@property (nonatomic, strong) Nameday *nameday;
 @property (nonatomic, strong) NSDateFormatter *hourlyFormatter;
 @property (nonatomic, strong) NSDateFormatter *dailyFormatter;
 @property (nonatomic, strong) NSURLSession *session;
@@ -36,6 +37,7 @@
     _dailyFormatter.dateFormat = @"EEEE";
     
     [self initUI];
+    [self retrieveNameday];
 
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -115,6 +117,57 @@
             }
         }else{
             NSLog(@"Error");
+        }
+    }];
+    [dataTask resume];
+}
+
+- (void)retrieveNameday {
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    self.session = [NSURLSession sessionWithConfiguration:config];
+    
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:[NSDate date]];
+    NSInteger day = [components day];
+    NSInteger month = [components month];
+    NSInteger year = [components year];
+    NSString *paddingFormat = [NSString stringWithFormat:@"%%0%dd", 2];
+    NSString *url = [NSString stringWithFormat:@"http://nameday.tiste.io/namedays/%d%@%@.json?callback=nameday",(int)year,[NSString stringWithFormat:paddingFormat, (int)month], [NSString stringWithFormat:paddingFormat, (int)day]];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    
+    NSURLSessionDataTask *dataTask =
+    [self.session dataTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if(!error)
+        {
+            NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*)response;
+            
+            if(httpResp.statusCode == 200)
+            {
+                NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                NSRange range = [jsonString rangeOfString:@"["];
+                range.location++;
+                range.length = [jsonString length] - range.location - 2;
+                jsonString = [jsonString substringWithRange:range];
+                NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+                NSError *jsonError = nil;
+                NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&jsonError];
+           
+                if(!jsonError)
+                {
+                    self.nameday = [[Nameday alloc]initWithData:jsonResponse];
+                }else
+                {
+                    NSLog(@"Error");
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                    NSLog(@"%@", self.nameday.name);
+                });
+            }else{
+                NSLog(@"http Error %d", (int)httpResp.statusCode);
+            }
+        }else{
+            NSLog(@"url Error");
         }
     }];
     [dataTask resume];
