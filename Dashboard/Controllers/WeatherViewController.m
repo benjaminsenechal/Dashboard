@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UILabel *temperatureLabel;
 @property (nonatomic, strong) UILabel *hiloLabel;
 @property (nonatomic, strong) UILabel *cityLabel;
+@property (nonatomic, strong) UILabel *namedayLabel;
 @property (nonatomic, strong) UIImageView *iconView;
 @property (nonatomic, strong) UILabel *conditionsLabel;
 
@@ -161,7 +162,7 @@
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                    NSLog(@"%@", self.nameday.name);
+                    [self.namedayLabel setText:[NSString stringWithFormat:@"Have a good day, %@ !", self.nameday.name]];
                 });
             }else{
                 NSLog(@"http Error %d", (int)httpResp.statusCode);
@@ -249,6 +250,14 @@
     self.cityLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
     self.cityLabel.textAlignment = NSTextAlignmentCenter;
     [header addSubview:self.cityLabel];
+    
+    self.namedayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 60, self.view.bounds.size.width, 30)];
+    self.namedayLabel.backgroundColor = [UIColor clearColor];
+    self.namedayLabel.textColor = [UIColor whiteColor];
+    self.namedayLabel.text = @"Loading...";
+    self.namedayLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+    self.namedayLabel.textAlignment = NSTextAlignmentCenter;
+    [header addSubview:self.namedayLabel];
     
     self.conditionsLabel = [[UILabel alloc] initWithFrame:conditionsFrame];
     self.conditionsLabel.backgroundColor = [UIColor clearColor];
@@ -352,16 +361,5 @@
     self.blurredImageView.frame = bounds;
     self.tableView.frame = bounds;
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
