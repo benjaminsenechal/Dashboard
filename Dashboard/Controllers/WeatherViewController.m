@@ -12,12 +12,14 @@
 
 @property (strong, nonatomic) Weather *weather;
 @property (nonatomic, strong) NSArray *weathers;
+@property (nonatomic, strong) Nameday *nameday;
 @property (nonatomic, strong) NSDateFormatter *hourlyFormatter;
 @property (nonatomic, strong) NSDateFormatter *dailyFormatter;
 @property (nonatomic, strong) NSURLSession *session;
 @property (nonatomic, strong) UILabel *temperatureLabel;
 @property (nonatomic, strong) UILabel *hiloLabel;
 @property (nonatomic, strong) UILabel *cityLabel;
+@property (nonatomic, strong) UILabel *namedayLabel;
 @property (nonatomic, strong) UIImageView *iconView;
 @property (nonatomic, strong) UILabel *conditionsLabel;
 
@@ -36,6 +38,7 @@
     _dailyFormatter.dateFormat = @"EEEE";
     
     [self initUI];
+    [self retrieveNameday];
 
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -120,6 +123,57 @@
     [dataTask resume];
 }
 
+- (void)retrieveNameday {
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    self.session = [NSURLSession sessionWithConfiguration:config];
+    
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:[NSDate date]];
+    NSInteger day = [components day];
+    NSInteger month = [components month];
+    NSInteger year = [components year];
+    NSString *paddingFormat = [NSString stringWithFormat:@"%%0%dd", 2];
+    NSString *url = [NSString stringWithFormat:@"http://nameday.tiste.io/namedays/%d%@%@.json?callback=nameday",(int)year,[NSString stringWithFormat:paddingFormat, (int)month], [NSString stringWithFormat:paddingFormat, (int)day]];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    
+    NSURLSessionDataTask *dataTask =
+    [self.session dataTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if(!error)
+        {
+            NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*)response;
+            
+            if(httpResp.statusCode == 200)
+            {
+                NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                NSRange range = [jsonString rangeOfString:@"["];
+                range.location++;
+                range.length = [jsonString length] - range.location - 2;
+                jsonString = [jsonString substringWithRange:range];
+                NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+                NSError *jsonError = nil;
+                NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&jsonError];
+           
+                if(!jsonError)
+                {
+                    self.nameday = [[Nameday alloc]initWithData:jsonResponse];
+                }else
+                {
+                    NSLog(@"Error");
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                    [self.namedayLabel setText:[NSString stringWithFormat:@"Have a good day, %@ !", self.nameday.name]];
+                });
+            }else{
+                NSLog(@"http Error %d", (int)httpResp.statusCode);
+            }
+        }else{
+            NSLog(@"url Error");
+        }
+    }];
+    [dataTask resume];
+}
+
 #pragma mark UI
 
 - (void)initUI {
@@ -196,6 +250,14 @@
     self.cityLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
     self.cityLabel.textAlignment = NSTextAlignmentCenter;
     [header addSubview:self.cityLabel];
+    
+    self.namedayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 60, self.view.bounds.size.width, 30)];
+    self.namedayLabel.backgroundColor = [UIColor clearColor];
+    self.namedayLabel.textColor = [UIColor whiteColor];
+    self.namedayLabel.text = @"Loading...";
+    self.namedayLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+    self.namedayLabel.textAlignment = NSTextAlignmentCenter;
+    [header addSubview:self.namedayLabel];
     
     self.conditionsLabel = [[UILabel alloc] initWithFrame:conditionsFrame];
     self.conditionsLabel.backgroundColor = [UIColor clearColor];
@@ -299,16 +361,5 @@
     self.blurredImageView.frame = bounds;
     self.tableView.frame = bounds;
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

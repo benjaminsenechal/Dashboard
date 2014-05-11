@@ -16,5 +16,6 @@
     #import <CoreData/CoreData.h>
     #import "Weather.h"
     #import "Search.h"
+    #import "Nameday.h"
     #import "LBBlurredImage/UIImageView+LBBlurredImage.h"
 #endif
